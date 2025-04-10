@@ -1,0 +1,22 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Virtual Environment
+venv/
+ENV/
+
+# Database files
+*.db
+
+# Logs
+logs/
+*.log
+
+# Uploads and generated files
+uploads/*
+reports/*
+
+# Keep directories but not files
+!uploads/.gitkeep
+!reports/.gitkeep
