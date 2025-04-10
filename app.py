@@ -234,9 +234,11 @@ def display_dashboard():
         invoices_df['invoice_date'] = pd.to_datetime(invoices_df['invoice_date'])
         invoices_df['due_date'] = pd.to_datetime(invoices_df['due_date'])
         
-        # Calculate days overdue
+        # Calculate days overdue - FIXED
         today = datetime.now().date()
-        invoices_df['days_overdue'] = (today - invoices_df['due_date'].dt.date).dt.days
+        invoices_df['due_date_obj'] = invoices_df['due_date'].dt.date  # Extract date objects
+        # Use apply lambda function to calculate days for each row
+        invoices_df['days_overdue'] = invoices_df['due_date_obj'].apply(lambda x: (today - x).days)
         
         # Create aging buckets
         conditions = [
@@ -725,10 +727,12 @@ def display_invoice_list():
     invoices['invoice_date'] = pd.to_datetime(invoices['invoice_date']).dt.strftime('%Y-%m-%d')
     invoices['due_date'] = pd.to_datetime(invoices['due_date']).dt.strftime('%Y-%m-%d')
     
-    # Calculate days to due or overdue
+    # Calculate days to due or overdue - fixed calculation
     today = datetime.now().date()
+    # Convert due_date back to datetime for comparison
     invoices['due_date_dt'] = pd.to_datetime(invoices['due_date']).dt.date
-    invoices['days'] = (invoices['due_date_dt'] - today).dt.days
+    # Calculate days difference
+    invoices['days'] = invoices['due_date_dt'].apply(lambda x: (x - today).days)
     
     # Filters
     col1, col2, col3 = st.columns(3)
@@ -1651,8 +1655,11 @@ def display_aging_report():
         invoices['invoice_date'] = pd.to_datetime(invoices['invoice_date'])
         invoices['due_date'] = pd.to_datetime(invoices['due_date'])
         
-        # Calculate days overdue
-        invoices['days_overdue'] = (as_of_date - invoices['due_date'].dt.date).dt.days
+        # Calculate days overdue - Fixed
+        invoices['due_date_obj'] = invoices['due_date'].dt.date  # Get date objects
+        invoices['days_overdue'] = invoices['due_date_obj'].apply(lambda x: (as_of_date - x).days)
+        
+        # Rest of your aging report function...
         
         # Create aging buckets
         conditions = [
